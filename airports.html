@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Browse by Airport | Fixopedia</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <div class="container">
+    <h1><a href="index.html" style="color:white;">Fixopedia</a></h1>
+    <p>Aviation Waypoint Name Origins</p>
+  </div>
+</header>
+
+<main class="container">
+  <section>
+    <h2>Browse by Airport</h2>
+    <ul id="airportList"></ul>
+  </section>
+</main>
+
+<footer>
+  <div class="container"><p>&copy; 2025 Fixopedia</p></div>
+</footer>
+
+<script>
+  (async () => {
+    const list = document.getElementById("airportList");
+
+    const get = (o, ...keys) =>
+      keys.map(k => o?.[k]).find(v => v != null && String(v).trim() !== "") || "";
+
+    const splitVals = (v) =>
+      String(v)
+        .split(",")
+        .map(s => s.trim())
+        .filter(Boolean);
+
+    try {
+      const res = await fetch("./waypoints.json");
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const waypoints = await res.json();
+
+      const airports = new Set();
+
+      waypoints.forEach(w => {
+        // Try multiple likely keys
+        const raw = get(w, "airport", "Airport", "Airports", "ICAOCode (from Airport)");
+        splitVals(raw).forEach(a => airports.add(a));
+      });
+
+      const sorted = [...airports].sort((a, b) => a.localeCompare(b));
+
+      if (sorted.length === 0) {
+        list.innerHTML = "<li>No airports found in waypoints.json. (Likely the airport fields are blank.)</li>";
+        return;
+      }
+
+      sorted.forEach(airport => {
+        const li = document.createElement("li");
+        li.innerHTML = `<a href="index.html?airport=${encodeURIComponent(airport)}#search">${airport}</a>`;
+        list.appendChild(li);
+      });
+    } catch (err) {
+      console.error(err);
+      list.innerHTML = "<li>Could not load waypoints.json. Make sure Live Server is running.</li>";
+    }
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Waypoint EXAMPLE | Fixopedia</title>
+    <meta name="description" content="Details and name origin for aviation waypoint EXAMPLE.">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+    <div class="container">
+        <h1><a href="index.html" style="color:white;">Fixopedia</a></h1>
+        <p>Aviation Waypoint Name Origins</p>
+    </div>
+</header>
+
+<main class="container">
+
+    <section id="waypoint-detail">
+        <h2>Waypoint: EXAMPLE</h2>
+        <button id="backButton" type="button">← Back to results</button>
+
+        <div class="detail-grid">
+            <div>
+                <p><strong>State:</strong> <span id="wpState"></span></p>
+                <p><strong>Associated Airport:</strong> <span id="wpAirport"></span></p>
+                <p><strong>Procedure Type:</strong> <span id="wpProcType"></span></p>
+                <p><strong>Procedure Name:</strong> <span id="wpProcName"></span></p>
+                <p><strong>Latitude:</strong> <span id="wpLat"></span></p>
+                <p><strong>Longitude:</strong> <span id="wpLon"></span></p>
+
+            </div>
+
+            <div>
+                <p><strong>Raw Coordinates:</strong> <span id="wpCoordText"></span></p>
+
+            </div>
+        </div>
+    </section>
+
+    <section id="origin">
+        <h2>Name Origin</h2>
+        <p id="wpOrigin"></p>
+
+    </section>
+
+    <section id="related">
+        <h2>Related Waypoints</h2>
+        <ul>
+            <li><a href="waypoint.html?name=BRAVO">BRAVO</a></li>
+            <li><a href="waypoint.html?name=CHARLIE">CHARLIE</a></li>
+            <li><a href="waypoint.html?name=DELTA">DELTA</a></li>
+        </ul>
+    </section>
+
+</main>
+
+<footer>
+    <div class="container">
+        <p>&copy; 2025 Fixopedia</p>
+    </div>
+</footer>
+
+<script>
+  // Back button: go to the search box
+  const backButton = document.getElementById("backButton");
+  if (backButton) {
+    backButton.addEventListener("click", () => {
+      window.location.href = "index.html#search";
+    });
+  }
+
+  // Read waypoint name from URL
+  const params = new URLSearchParams(window.location.search);
+  const name = (params.get("name") || "").trim().toUpperCase();
+
+  // Helpers
+  const setText = (id, value) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = value ?? "";
+  };
+
+  const get = (obj, ...keys) => {
+    for (const k of keys) {
+      if (obj && obj[k] != null && String(obj[k]).trim() !== "") return obj[k];
+    }
+    return "";
+  };
+
+  const heading = document.querySelector("#waypoint-detail h2");
+  if (name) {
+    document.title = `Waypoint ${name} | Fixopedia`;
+    if (heading) heading.textContent = `Waypoint: ${name}`;
+  } else {
+    document.title = "Waypoint | Fixopedia";
+    if (heading) heading.textContent = "Waypoint";
+    setText("wpOrigin", "No waypoint specified. Open like: waypoint.html?name=ABCDE");
+  }
+
+  async function loadWaypoint() {
+    try {
+      const res = await fetch("./waypoints.json");
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const waypoints = await res.json();
+
+      const wp = waypoints.find(w => {
+        const n = String(get(w, "waypoint", "Waypoint", "\ufeffWaypoint")).trim().toUpperCase();
+        return n === name;
+      });
+
+      if (!wp) {
+        setText("wpOrigin", "No details found for this waypoint yet (not in waypoints.json).");
+        return;
+      }
+
+      // Fill (Detail level B)
+      setText("wpState", get(wp, "state", "State", "State Location (from Airport)"));
+      setText("wpAirport", get(wp, "airport", "Airport"));
+      setText("wpProcType", get(wp, "procedure_type", "ProcedureType"));
+      setText("wpProcName", get(wp, "procedure_name", "Procedure Name"));
+
+      setText("wpLat", get(wp, "lat", "Latitude"));
+      setText("wpLon", get(wp, "lon", "Longitude"));
+      setText("wpCoordText", get(wp, "coordinates_text", "Waypoint Coordinates"));
+
+      // Optional: if you add Status later, this will automatically start working
+      setText("wpStatus", get(wp, "status", "Status"));
+
+      setText("wpOrigin", get(wp, "origin", "Notes"));
+    } catch (err) {
+      setText("wpOrigin", "Could not load waypoints.json. Make sure you're running Live Server.");
+      console.error(err);
+    }
+  }
+
+  if (name) loadWaypoint();
+</script>
+
+
+
+</body>
+</html>

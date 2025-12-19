@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Browse by State | Fixopedia</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <div class="container">
+    <h1><a href="index.html" style="color:white;">Fixopedia</a></h1>
+    <p>Aviation Waypoint Name Origins</p>
+  </div>
+</header>
+
+<main class="container">
+  <section>
+    <h2>Browse by State</h2>
+    <ul id="stateList"></ul>
+  </section>
+</main>
+
+<footer>
+  <div class="container"><p>&copy; 2025 Fixopedia</p></div>
+</footer>
+
+<script>
+  (async () => {
+    const list = document.getElementById("stateList");
+
+    // helper: get first non-empty field value
+    const get = (o, ...keys) =>
+      keys.map(k => o?.[k]).find(v => v != null && String(v).trim() !== "") || "";
+
+    // helper: split comma-separated values into clean tokens
+    const splitVals = (v) =>
+      String(v)
+        .split(",")
+        .map(s => s.trim())
+        .filter(Boolean);
+
+    try {
+      const res = await fetch("./waypoints.json");
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const waypoints = await res.json();
+
+      const states = new Set();
+
+      waypoints.forEach(w => {
+        // Try multiple likely keys (JSON export vs your converted JSON)
+        const raw = get(w, "state", "State", "State Location (from Airport)");
+        splitVals(raw).forEach(s => states.add(s));
+      });
+
+      const sorted = [...states].sort((a, b) => a.localeCompare(b));
+
+      if (sorted.length === 0) {
+        list.innerHTML = "<li>No states found in waypoints.json. (Likely the state fields are blank.)</li>";
+        return;
+      }
+
+      sorted.forEach(state => {
+        const li = document.createElement("li");
+        li.innerHTML = `<a href="index.html?state=${encodeURIComponent(state)}#search">${state}</a>`;
+        list.appendChild(li);
+      });
+    } catch (err) {
+      console.error(err);
+      list.innerHTML = "<li>Could not load waypoints.json. Make sure Live Server is running.</li>";
+    }
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,178 @@
+[
+  {
+    "waypoint": "BRBBQ",
+    "state": "Tennessee",
+    "airport": "Memphis International Airport",
+    "procedure_type": "STAR",
+    "procedure_name": "BRBBQ TWO",
+    "origin": "Memphis is known for their BBQ",
+    "coordinates_text": "35.50°N/90.89°W",
+    "lat": 35.5,
+    "lon": -90.89
+  },
+  {
+    "waypoint": "AUTMN",
+    "state": "Tennessee",
+    "airport": "Memphis International Airport",
+    "procedure_type": "SID",
+    "procedure_name": "AUTMN SIX",
+    "origin": "A thematic name relating to the season. Memphis experiences vibrant seasonal changes that are celebrated locally.",
+    "coordinates_text": "34.61°N/90.63°W",
+    "lat": 34.61,
+    "lon": -90.63
+  },
+  {
+    "waypoint": "PRYMD",
+    "state": "Tennessee",
+    "airport": "Memphis International Airport",
+    "procedure_type": "SID",
+    "procedure_name": "AUTMN SIX,BINKY SIX,CHLDR FIVE,DUCKZ FIVE,OLEMS SIX,PIEPE SIX",
+    "origin": "The Memphis Pyramid, originally a sports arena and now housing a Bass Pro Shop, is an iconic part of the city's skyline.",
+    "coordinates_text": "35.15°N/90.14°W",
+    "lat": 35.15,
+    "lon": -90.14
+  },
+  {
+    "waypoint": "BEEAL",
+    "state": "Tennessee",
+    "airport": "Memphis International Airport",
+    "procedure_type": "SID",
+    "procedure_name": "AUTMN SIX,BINKY SIX,CHLDR FIVE,DUCKZ FIVE,HOTRD FIVE,NIKEI FIVE,OLEMS SIX,PIEPE SIX",
+    "origin": "One of the most famous streets in Memphis, known for its blues music and nightlife.",
+    "coordinates_text": "35.14°N/90.04°W",
+    "lat": 35.14,
+    "lon": -90.04
+  },
+  {
+    "waypoint": "HURTN",
+    "state": "Tennessee",
+    "airport": "Memphis International Airport",
+    "procedure_type": "SID",
+    "procedure_name": "AUTMN SIX,BINKY SIX",
+    "origin": "A historically significant public housing project in Memphis.",
+    "coordinates_text": "34.88°N/89.99°W",
+    "lat": 34.88,
+    "lon": -89.99
+  },
+  {
+    "waypoint": "STJUD",
+    "state": "Tennessee",
+    "airport": "Memphis International Airport",
+    "procedure_type": "SID",
+    "procedure_name": "AZONE SEVEN,BBKNG SEVEN,GMBUD SEVEN",
+    "origin": "St. Jude Children's Research Hospital is a pediatric treatment and research hospital headquartered in Memphis, Tennessee. Founded by entertainer Danny Thomas in 1962, it is a 501 designated nonprofit medical corporation which focuses on children's catastrophic diseases, particularly leukemia and other cancers.",
+    "coordinates_text": "35.12°N/89.75°W",
+    "lat": 35.12,
+    "lon": -89.75
+  },
+  {
+    "waypoint": "RIBZZ",
+    "state": "Tennessee",
+    "airport": "Memphis International Airport",
+    "procedure_type": "SID",
+    "procedure_name": "AZONE SEVEN,BBKNG SEVEN,CRSON SEVEN,GENEH SEVEN,GMBUD SEVEN,GOETZ SEVEN,SELPH SEVEN",
+    "origin": "A reference to Memphis's famous barbecue ribs and its reputation as a top destination for barbecue",
+    "coordinates_text": "34.93°N/89.95°W",
+    "lat": 34.93,
+    "lon": -89.95
+  },
+  {
+    "waypoint": "BBKNG",
+    "state": "Tennessee",
+    "airport": "Memphis International Airport",
+    "procedure_type": "SID",
+    "procedure_name": "BBKNG SEVEN",
+    "origin": "B.B. King, the legendary blues musician who has deep ties to Memphis. B.B. King is an iconic figure in the city’s music history, and this fix honors his legacy.",
+    "coordinates_text": "34.90°N/89.14°W",
+    "lat": 34.9,
+    "lon": -89.14
+  },
+  {
+    "waypoint": "CHLDR",
+    "state": "Tennessee",
+    "airport": "Memphis International Airport",
+    "procedure_type": "SID",
+    "procedure_name": "CHLDR FIVE",
+    "origin": "A reference to Children, which is connect to St. Jude Children's Research Hospital in Memphis",
+    "coordinates_text": "34.89°N/90.80°W",
+    "lat": 34.89,
+    "lon": -90.8
+  },
+  {
+    "waypoint": "MUDHO",
+    "state": "Tennessee",
+    "airport": "Memphis International Airport",
+    "procedure_type": "SID",
+    "procedure_name": "CHLDR FIVE,DUCKZ FIVE,GRRIZ FIVE,HOTRD FIVE,JTEEE FIVE,NIKEI FIVE",
+    "origin": "While not verified, likely a nod to Memphis's nickname, \"The City on the Bluffs,\" referencing its location on the muddy Mississippi River.",
+    "coordinates_text": "34.94°N/90.11°W",
+    "lat": 34.94,
+    "lon": -90.11
+  },
+  {
+    "waypoint": "DUCKZ",
+    "state": "Tennessee",
+    "airport": "Memphis International Airport",
+    "procedure_type": "SID",
+    "procedure_name": "DUCKZ FIVE",
+    "origin": "A nod to the Peabody Ducks, a famous Memphis tradition at the Peabody Hotel, where ducks march to and from the hotel lobby fountain daily.",
+    "coordinates_text": "35.02°N/90.82°W",
+    "lat": 35.02,
+    "lon": -90.82
+  },
+  {
+    "waypoint": "HELAR",
+    "state": "Tennessee",
+    "airport": "Memphis International Airport",
+    "procedure_type": "SID",
+    "procedure_name": "DUCKZ FIVE",
+    "origin": "Might symbolize \"healer,\" subtly tying to Memphis's medical institutions, such as St. Jude Children's Research Hospital.",
+    "coordinates_text": "35.02°N/90.86°W",
+    "lat": 35.02,
+    "lon": -90.86
+  },
+  {
+    "waypoint": "THMUS",
+    "state": "Tennessee",
+    "airport": "Memphis International Airport",
+    "procedure_type": "SID",
+    "procedure_name": "GOETZ SEVEN",
+    "origin": "shorthand for Thomas, possibly referring to Danny Thomas, the founder of St. Jude Children’s Research Hospital, a",
+    "coordinates_text": "35.20°N/89.49°W",
+    "lat": 35.2,
+    "lon": -89.49
+  },
+  {
+    "waypoint": "GRRIZ",
+    "state": "Tennessee",
+    "airport": "Memphis International Airport",
+    "procedure_type": "SID",
+    "procedure_name": "GRRIZ FIVE",
+    "origin": "Reference to the Memphis Grizzlies, the city’s NBA basketball team.",
+    "coordinates_text": "35.70°N/90.32°W",
+    "lat": 35.7,
+    "lon": -90.32
+  },
+  {
+    "waypoint": "OLEMS",
+    "state": "Tennessee",
+    "airport": "Memphis International Airport",
+    "procedure_type": "SID",
+    "procedure_name": "OLEMS SIX",
+    "origin": "While not directly related to Memphis, TN, this fix is almost directly over Ole Miss (the University of Mississippi)",
+    "coordinates_text": "34.49°N/89.67°W",
+    "lat": 34.49,
+    "lon": -89.67
+  },
+  {
+    "waypoint": "BEBIE",
+    "state": "Tennessee",
+    "airport": "Memphis International Airport",
+    "procedure_type": "SID",
+    "procedure_name": "PIEPE SIX",
+    "origin": "B.B. King, the legendary blues musician deeply tied to Memphis",
+    "coordinates_text": "34.28ºN/90.05ºW",
+    "lat": null,
+    "lon": null
+  }
+]

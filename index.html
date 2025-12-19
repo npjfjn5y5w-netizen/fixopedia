@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fixopedia | Aviation Waypoint Origins</title>
+    <meta name="description" content="Fixopedia is a database of aviation waypoints and the origins of their names, organized by state, airport, procedure, and waypoint.">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <h1>Fixopedia</h1>
+            <p>Aviation Waypoint Name Origins</p>
+
+            <nav>
+                <ul>
+                  <li><a href="index.html">Home</a></li>
+                  <li><a href="states.html">States</a></li>
+                  <li><a href="airports.html">Airports</a></li>
+                  <li><a href="#">Procedures</a></li>
+                  <li><a href="#">Waypoints</a></li>
+                  <li><a href="#">About</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+
+        <!-- Search Section -->
+<section id="search">
+    <h2>Search Waypoints</h2>
+    <input 
+        type="text" 
+        id="searchInput" 
+        placeholder="Search by waypoint, state, airport, or origin..."
+    >
+</section>
+
+<section id="results">
+    <h2 id="resultsTitle">Results</h2>
+    <p id="resultsHint" class="muted"></p>
+
+    <ul id="waypointList">
+        <li class="waypoint">
+            <h3>EXAMPLE</h3>
+            <p><strong>State:</strong> California</p>
+            <p><strong>Airport:</strong> LAX</p>
+            <p><strong>Origin:</strong> Named after a local landmark.</p>
+        </li>
+
+        <li class="waypoint">
+            <h3>BRAVO</h3>
+            <p><strong>State:</strong> Texas</p>
+            <p><strong>Airport:</strong> DFW</p>
+            <p><strong>Origin:</strong> Historical aviation reference.</p>
+        </li>
+
+        <li class="waypoint">
+            <h3>CHARLIE</h3>
+            <p><strong>State:</strong> Florida</p>
+            <p><strong>Airport:</strong> MIA</p>
+            <p><strong>Origin:</strong> Named for coastal geography.</p>
+        </li>
+    </ul>
+</section>
+
+
+        <!-- Featured Content -->
+        <section id="featured">
+            <h2>Featured Waypoint</h2>
+            <article>
+                <h3>EXAMPLE</h3>
+                <p><strong>State:</strong> California</p>
+                <p><strong>Associated Airport:</strong> LAX</p>
+                <p><strong>Origin:</strong> Named after a local landmark or historical reference.</p>
+            </article>
+        </section>
+
+        <!-- Browse Section -->
+        <section id="browse">
+            <h2>Browse Database</h2>
+            <ul>
+                <li><a href="#">Browse by State</a></li>
+                <li><a href="#">Browse by Airport</a></li>
+                <li><a href="#">Browse by Procedure</a></li>
+                <li><a href="#">Browse by Waypoint</a></li>
+            </ul>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Fixopedia. All rights reserved.</p>
+        </div>
+    </footer>
+<script src="script.js"></script>
+</body>
+</html>
