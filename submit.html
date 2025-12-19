@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Submit a Fix – Fixopedia</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<main style="max-width:720px;margin:40px auto;padding:0 16px;">
+  <h1>Submit a Fix</h1>
+
+  <p>
+    Know the origin or meaning of an aviation fix name?
+    Submit it here and I’ll review it for inclusion in Fixopedia.
+  </p>
+
+  <form
+    name="fix-submission"
+    method="POST"
+    action="/thanks.html"
+    data-netlify="true"
+    netlify-honeypot="bot-field">
+
+    <!-- Required by Netlify -->
+    <input type="hidden" name="form-name" value="fix-submission" />
+
+    <!-- Honeypot -->
+    <p class="hidden">
+      <label>Don’t fill this out: <input name="bot-field" /></label>
+    </p>
+
+    <label>
+      Fix name *
+      <input
+        type="text"
+        name="fix_name"
+        required
+        placeholder="e.g., HOGGS"
+      />
+    </label>
+
+    <label>
+      Origin / meaning *
+      <textarea
+        name="origin"
+        rows="5"
+        required
+        placeholder="Explain where the name came from, history, or reference"
+      ></textarea>
+    </label>
+
+    <label>
+      Source / reference (optional)
+      <input
+        type="url"
+        name="source"
+        placeholder="https://..."
+      />
+    </label>
+
+    <label>
+      Your name (optional)
+      <input type="text" name="submitter_name" />
+    </label>
+
+    <label>
+      Your email (optional)
+      <input type="email" name="submitter_email" />
+    </label>
+
+    <button type="submit">Submit Fix</button>
+  </form>
+
+  <p style="margin-top:16px;">
+    <a href="index.html">← Back to Fixopedia</a>
+  </p>
+</main>
+
+</body>
+</html>
