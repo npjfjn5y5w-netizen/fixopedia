@@ -8,7 +8,27 @@ document.addEventListener("DOMContentLoaded", async () => {
   let allWaypoints = [];
 
   
-  async function loadWaypoints() {
+async function searchWaypointsSupabase(query) {
+  if (!query) return [];
+
+  const { data, error } = await supabaseClient
+    .from("waypoints")
+    .select("fixipedia_id, name, state, latitude, longitude")
+    .ilike("name", `%${query}%`)
+    .order("name", { ascending: true })
+    .limit(50);
+
+  if (error) {
+    console.error("Supabase search error:", error);
+    return [];
+  }
+
+  return data || [];
+}
+
+async function loadWaypoints() {
+
+
     const res = await fetch("./waypoints.json");
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
@@ -38,19 +58,21 @@ document.addEventListener("DOMContentLoaded", async () => {
   const isStatesPage = !!statesList;
   const isAirportsPage = !!airportsList;
 
+ // Only load waypoints.json for States/Airports pages (for now)
+if (isStatesPage || isAirportsPage) {
   try {
     allWaypoints = await loadWaypoints();
   } catch (e) {
     console.error("Fetch error:", e);
 
-    // Put a friendly message wherever we can
     if (resultsTitle) resultsTitle.textContent = "Results";
-    if (resultsHint) resultsHint.textContent = "Could not load waypoints.json (check Live Server root / file location).";
+    if (resultsHint) resultsHint.textContent = "Could not load waypoints.json.";
     if (waypointList) waypointList.innerHTML = "";
     if (statesList) statesList.innerHTML = "<li>Could not load waypoints.json.</li>";
     if (airportsList) airportsList.innerHTML = "<li>Could not load waypoints.json.</li>";
     return;
   }
+}
 
   // -------------------------
   // STATES PAGE
@@ -102,7 +124,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (stateFilter) searchInput.value = stateFilter;
     if (airportFilter) searchInput.value = airportFilter;
 
-    const RECENTS_KEY = "fixopedia_recent_waypoints";
+    const RECENTS_KEY = "fixipedia_recent_waypoints";
     const MAX_RECENTS = 6;
 
     function saveRecent(name) {
@@ -121,23 +143,31 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     function renderCards(list) {
-      waypointList.innerHTML = "";
-      list.forEach(wp => {
-        const li = document.createElement("li");
-        li.className = "waypoint";
-        li.innerHTML = `
-          <h3>${wp.waypoint || ""}</h3>
-          <p><strong>State:</strong> ${wp.state || ""}</p>
-          <p><strong>Airport:</strong> ${wp.airport || ""}</p>
-          <p><strong>Origin:</strong> ${wp.origin || ""}</p>
-        `;
-        li.addEventListener("click", () => {
-          saveRecent(wp.waypoint);
-          navigateToWaypoint(wp.waypoint);
-        });
-        waypointList.appendChild(li);
-      });
-    }
+  waypointList.innerHTML = "";
+
+  if (!list || list.length === 0) {
+    resultsHint.textContent = "No matches found.";
+    return;
+  }
+
+  list.forEach(wp => {
+    const li = document.createElement("li");
+    li.className = "waypoint";
+    li.innerHTML = `
+      <h3>${wp.name || ""}</h3>
+      <p><strong>State:</strong> ${wp.state || ""}</p>
+      <p><strong>Lat/Lon:</strong> ${wp.latitude ?? ""}, ${wp.longitude ?? ""}</p>
+    `;
+
+    li.addEventListener("click", () => {
+      saveRecent(wp.name);
+      navigateToWaypoint(wp.name);
+    });
+
+    waypointList.appendChild(li);
+  });
+}
+
 
     function showRecentsUI() {
       const recents = getRecents();
@@ -160,28 +190,29 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
     }
 
-    function updateUI() {
-      const query = searchInput.value.trim().toLowerCase();
+    let searchTimer = null;
 
-      if (!query) {
-        showRecentsUI();
-        return;
-      }
+async function updateUI() {}
+  const query = searchInput.value.trim();
 
-      resultsTitle.textContent = "Results";
-      resultsHint.textContent = "";
-
-      const filtered = allWaypoints.filter(wp => {
-        const hay = `${wp.waypoint} ${wp.state} ${wp.airport} ${wp.procedure_type} ${wp.procedure_name} ${wp.origin}`.toLowerCase();
-        return hay.includes(query);
-      });
-
-      renderCards(filtered);
-    }
-
-    searchInput.addEventListener("keyup", updateUI);
-    updateUI();
+  if (!query) {
+    showRecentsUI();
+    return;
   }
+
+  resultsTitle.textContent = "Results";
+  resultsHint.textContent = "Searching…";
+
+  // Debounce so we don’t query Supabase on every single keystroke instantly
+  if (searchTimer) clearTimeout(searchTimer);
+
+  searchTimer = setTimeout(async () => {
+    const rows = await searchWaypointsSupabase(query);
+    resultsHint.textContent = "";
+    renderCards(rows);
+  }, 250);
+}
+
 
   // Run page renderers if their containers exist
   if (isStatesPage) renderStatesPage();
