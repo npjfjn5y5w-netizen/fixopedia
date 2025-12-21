@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Identify page type
   const isWaypointsPage = !!(searchInput && waypointList && resultsTitle && resultsHint);
   const isStatesPage = !!statesList;
-  const isAirportsPage = !!airportsList;l;kmj
+  const isAirportsPage = !!airportsList;
 
   // URL filters (States/Airports pages link to index.html?state=XX etc.)
   const urlParams = new URLSearchParams(window.location.search);
