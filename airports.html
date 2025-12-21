@@ -1,15 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
+  <input id="searchInput" />
+<div id="resultsHint"></div>
+<div id="airportList"></div>
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Browse by Airport | Fixopedia</title>
+  <title>Browse by Airport | Fixipedia</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <header>
   <div class="container">
-    <h1><a href="index.html" style="color:white;">Fixopedia</a></h1>
+    <h1><a href="index.html" style="color:white;">Fixipedia</a></h1>
     <p>Aviation Waypoint Name Origins</p>
   </div>
 </header>
@@ -22,7 +26,7 @@
 </main>
 
 <footer>
-  <div class="container"><p>&copy; 2025 Fixopedia</p></div>
+  <div class="container"><p>&copy; 2025 Fixipedia</p></div>
 </footer>
 
 <script>
@@ -69,6 +73,7 @@
     }
   })();
 </script>
+<script type="module" src="./airports.js"></script>
 
 </body>
 </html>
