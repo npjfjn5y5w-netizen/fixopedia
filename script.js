@@ -3,29 +3,11 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-async function testSupabaseConnection() {
-  const { data, error } = await supabaseClient
-    .from("waypoints")
-    .select("fixipedia_id, name, state, latitude, longitude")
-    .limit(5);
-
-  if (error) {
-    console.error("Supabase test FAILED:", error);
-    alert("Supabase test FAILED. Open console (F12).");
-    return;
-  }
-
-  console.log("Supabase test OK:", data);
-  alert("Supabase test OK! Check console.");
-}
-
 document.addEventListener("DOMContentLoaded", async () => {
-  await testSupabaseConnection(); // temporary test
-
   // Common: load data once
   let allWaypoints = [];
 
-
+  
   async function loadWaypoints() {
     const res = await fetch("./waypoints.json");
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
