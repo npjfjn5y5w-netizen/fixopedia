@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Identify page type
   const isWaypointsPage = !!(searchInput && waypointList && resultsTitle && resultsHint);
   const isStatesPage = !!statesList;
-  const isAirportsPage = !!airportsList;
+  const isAirportsPage = !!airportsList;l;kmj
 
   // URL filters (States/Airports pages link to index.html?state=XX etc.)
   const urlParams = new URLSearchParams(window.location.search);
@@ -61,35 +61,42 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // -----------------------------
-  // STATES / AIRPORTS PAGES
-  // (still using waypoints.json for now)
-  // -----------------------------
-  let allWaypoints = [];
+// STATES PAGE (Supabase-powered)
+// -----------------------------
+async function loadStatesSupabase() {
+  // Pull distinct non-empty state values
+  const { data, error } = await supabaseClient
+    .from("waypoints")
+    .select("state")
+    .not("state", "is", null)
+    .neq("state", "");
 
-  if (isStatesPage || isAirportsPage) {
-    try {
-      allWaypoints = await loadWaypointsJson();
-    } catch (e) {
-      console.error("Fetch error:", e);
-      if (isStatesPage) statesList.innerHTML = "<li>Could not load waypoints.json.</li>";
-      if (isAirportsPage) airportsList.innerHTML = "<li>Could not load waypoints.json.</li>";
-      return;
-    }
+  if (error) {
+    console.error("Supabase states error:", error);
+    return [];
   }
 
-  function renderStatesPage() {
-    const states = new Set();
+  // De-dupe client-side (Supabase select doesn't do DISTINCT in this simple call)
+  const states = [...new Set((data || []).map(r => (r.state || "").trim()).filter(Boolean))];
+  states.sort((a, b) => a.localeCompare(b));
+  return states;
+}
 
-    allWaypoints.forEach((wp) => {
-      const s = (wp.state || "").trim();
-      if (s) states.add(s);
-    });
+async function renderStatesPage() {
+  statesList.innerHTML = "<li>Loading states…</li>";
 
-    const sorted = [...states].sort((a, b) => a.localeCompare(b));
-    statesList.innerHTML = sorted
-      .map((s) => `<li><a href="index.html?state=${encodeURIComponent(s)}">${s}</a></li>`)
-      .join("");
+  const states = await loadStatesSupabase();
+
+  if (!states.length) {
+    statesList.innerHTML = "<li>No states found.</li>";
+    return;
   }
+
+  statesList.innerHTML = states
+    .map(s => `<li><a href="index.html?state=${encodeURIComponent(s)}">${s}</a></li>`)
+    .join("");
+}
+
 
   function renderAirportsPage() {
     const airports = new Set();
@@ -216,5 +223,4 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Run page renderers
   // -----------------------------
   if (isStatesPage) renderStatesPage();
-  if (isAirportsPage) renderAirportsPage();
 });

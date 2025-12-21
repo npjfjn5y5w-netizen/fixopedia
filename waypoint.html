@@ -68,7 +68,7 @@
 <script>
   // ---- Supabase setup ----
   const SUPABASE_URL = "https://jobycjifggynmfszpdto.supabase.co";
-  const SUPABASE_ANON_KEY = "PASTE_YOUR_ANON_KEY_HERE"; // same anon key you used in script.js
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpvYnljamlmZ2d5bm1mc3pwZHRvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYzMjAyOTcsImV4cCI6MjA4MTg5NjI5N30.BJGf2NVlBP_-qqsp4TFYnjn9RdvqAC1wkj8j9MkXinQ"; // same anon key you used in script.js
   const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   // Back button
@@ -130,19 +130,6 @@
     return null;
   }
 
-  async function loadCuratedFromJson(nameUpper) {
-    // Your curated file has waypoint/procedure/origin fields
-    // (Small file, ok to keep for now)
-    try {
-      const res = await fetch("./waypoints.json");
-      if (!res.ok) return null;
-      const waypoints = await res.json();
-
-      return waypoints.find(w => String(w.waypoint || "").trim().toUpperCase() === nameUpper) || null;
-    } catch {
-      return null;
-    }
-  }
 
   function showDisambiguation(list) {
     // Multiple same-name fixes exist. Show a simple chooser.
@@ -209,10 +196,12 @@
     // 2) Pull curated “origin/procedure/airport” from your JSON (if it exists)
     const curated = await loadCuratedFromJson(supa.name);
 
-    setText("wpAirport", curated?.airport || "");
-    setText("wpProcType", curated?.procedure_type || "");
-    setText("wpProcName", curated?.procedure_name || "");
-    setText("wpOrigin", curated?.origin || "No origin story added yet.");
+    // For now, these fields are not in Supabase yet.
+    // We'll add them in a separate table (waypoint_origins) next.
+    setText("wpAirport", "");
+    setText("wpProcType", "");
+    setText("wpProcName", "");
+    setText("wpOrigin", "No origin story added yet.");
 
     // 3) Related list: if you want, keep your static links for now,
     // but we can generate real related results later.
