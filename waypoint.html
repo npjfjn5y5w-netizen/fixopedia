@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Waypoint EXAMPLE | Fixopedia</title>
+    <title>Waypoint EXAMPLE | Fixipedia</title>
     <meta name="description" content="Details and name origin for aviation waypoint EXAMPLE.">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -11,7 +11,7 @@
 
 <header>
     <div class="container">
-        <h1><a href="index.html" style="color:white;">Fixopedia</a></h1>
+        <h1><a href="index.html" style="color:white;">Fixipedia</a></h1>
         <p>Aviation Waypoint Name Origins</p>
     </div>
 </header>
@@ -59,12 +59,19 @@
 
 <footer>
     <div class="container">
-        <p>&copy; 2025 Fixopedia</p>
+        <p>&copy; 2025 Fixipedia</p>
     </div>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
-  // Back button: go to the search box
+  // ---- Supabase setup ----
+  const SUPABASE_URL = "https://jobycjifggynmfszpdto.supabase.co";
+  const SUPABASE_ANON_KEY = "PASTE_YOUR_ANON_KEY_HERE"; // same anon key you used in script.js
+  const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  // Back button
   const backButton = document.getElementById("backButton");
   if (backButton) {
     backButton.addEventListener("click", () => {
@@ -72,9 +79,10 @@
     });
   }
 
-  // Read waypoint name from URL
+  // Read params (prefer id, fallback to name)
   const params = new URLSearchParams(window.location.search);
-  const name = (params.get("name") || "").trim().toUpperCase();
+  const id = (params.get("id") || "").trim();
+  const nameParam = (params.get("name") || "").trim().toUpperCase();
 
   // Helpers
   const setText = (id, value) => {
@@ -82,61 +90,137 @@
     if (el) el.textContent = value ?? "";
   };
 
-  const get = (obj, ...keys) => {
-    for (const k of keys) {
-      if (obj && obj[k] != null && String(obj[k]).trim() !== "") return obj[k];
-    }
-    return "";
-  };
-
   const heading = document.querySelector("#waypoint-detail h2");
-  if (name) {
-    document.title = `Waypoint ${name} | Fixopedia`;
-    if (heading) heading.textContent = `Waypoint: ${name}`;
-  } else {
-    document.title = "Waypoint | Fixopedia";
-    if (heading) heading.textContent = "Waypoint";
-    setText("wpOrigin", "No waypoint specified. Open like: waypoint.html?name=ABCDE");
+
+  function setHeadingTitle(displayName) {
+    if (displayName) {
+      document.title = `Waypoint ${displayName} | Fixipedia`;
+      if (heading) heading.textContent = `Waypoint: ${displayName}`;
+    } else {
+      document.title = "Waypoint | Fixipedia";
+      if (heading) heading.textContent = "Waypoint";
+    }
   }
 
-  async function loadWaypoint() {
+  async function loadFromSupabase() {
+    // If we have a fixipedia_id, use that (best)
+    if (id) {
+      const { data, error } = await supabaseClient
+        .from("waypoints")
+        .select("fixipedia_id, name, state, latitude, longitude")
+        .eq("fixipedia_id", id)
+        .limit(1);
+
+      if (error) throw error;
+      return data?.[0] || null;
+    }
+
+    // Fallback: name (can return multiple)
+    if (nameParam) {
+      const { data, error } = await supabaseClient
+        .from("waypoints")
+        .select("fixipedia_id, name, state, latitude, longitude")
+        .eq("name", nameParam)
+        .limit(25);
+
+      if (error) throw error;
+      return data || [];
+    }
+
+    return null;
+  }
+
+  async function loadCuratedFromJson(nameUpper) {
+    // Your curated file has waypoint/procedure/origin fields
+    // (Small file, ok to keep for now)
     try {
       const res = await fetch("./waypoints.json");
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      if (!res.ok) return null;
       const waypoints = await res.json();
 
-      const wp = waypoints.find(w => {
-        const n = String(get(w, "waypoint", "Waypoint", "\ufeffWaypoint")).trim().toUpperCase();
-        return n === name;
-      });
-
-      if (!wp) {
-        setText("wpOrigin", "No details found for this waypoint yet (not in waypoints.json).");
-        return;
-      }
-
-      // Fill (Detail level B)
-      setText("wpState", get(wp, "state", "State", "State Location (from Airport)"));
-      setText("wpAirport", get(wp, "airport", "Airport"));
-      setText("wpProcType", get(wp, "procedure_type", "ProcedureType"));
-      setText("wpProcName", get(wp, "procedure_name", "Procedure Name"));
-
-      setText("wpLat", get(wp, "lat", "Latitude"));
-      setText("wpLon", get(wp, "lon", "Longitude"));
-      setText("wpCoordText", get(wp, "coordinates_text", "Waypoint Coordinates"));
-
-      // Optional: if you add Status later, this will automatically start working
-      setText("wpStatus", get(wp, "status", "Status"));
-
-      setText("wpOrigin", get(wp, "origin", "Notes"));
-    } catch (err) {
-      setText("wpOrigin", "Could not load waypoints.json. Make sure you're running Live Server.");
-      console.error(err);
+      return waypoints.find(w => String(w.waypoint || "").trim().toUpperCase() === nameUpper) || null;
+    } catch {
+      return null;
     }
   }
 
-  if (name) loadWaypoint();
+  function showDisambiguation(list) {
+    // Multiple same-name fixes exist. Show a simple chooser.
+    setHeadingTitle(nameParam);
+    setText("wpOrigin", "Multiple fixes share this name. Pick the correct one below:");
+
+    const related = document.querySelector("#related ul");
+    if (!related) return;
+
+    related.innerHTML = list.map(r => {
+      const label = `${r.name} (${r.latitude ?? "?"}, ${r.longitude ?? "?"})`;
+      return `<li><a href="waypoint.html?id=${encodeURIComponent(r.fixipedia_id)}">${label}</a></li>`;
+    }).join("");
+  }
+
+  async function renderWaypoint() {
+    if (!id && !nameParam) {
+      setHeadingTitle("");
+      setText("wpOrigin", "No waypoint specified. Open like: waypoint.html?id=FIXIPEDIA_ID (or ?name=ABCDE).");
+      return;
+    }
+
+    // 1) Pull FAA fields from Supabase
+    let supa = null;
+    try {
+      const result = await loadFromSupabase();
+
+      // If fallback by name returned a list:
+      if (Array.isArray(result)) {
+        if (result.length === 0) {
+          setHeadingTitle(nameParam);
+          setText("wpOrigin", "No Supabase record found for this name.");
+          return;
+        }
+        if (result.length > 1) {
+          showDisambiguation(result);
+          return;
+        }
+        supa = result[0];
+      } else {
+        supa = result;
+      }
+    } catch (err) {
+      console.error("Supabase load failed:", err);
+      setText("wpOrigin", "Could not load from Supabase. Check console (F12).");
+      return;
+    }
+
+    if (!supa) {
+      setHeadingTitle(nameParam || "");
+      setText("wpOrigin", "No Supabase record found.");
+      return;
+    }
+
+    // Set title/heading
+    setHeadingTitle(supa.name);
+
+    // Fill Supabase fields
+    setText("wpState", supa.state || "");
+    setText("wpLat", supa.latitude ?? "");
+    setText("wpLon", supa.longitude ?? "");
+    setText("wpCoordText", (supa.latitude != null && supa.longitude != null) ? `${supa.latitude}, ${supa.longitude}` : "");
+
+    // 2) Pull curated “origin/procedure/airport” from your JSON (if it exists)
+    const curated = await loadCuratedFromJson(supa.name);
+
+    setText("wpAirport", curated?.airport || "");
+    setText("wpProcType", curated?.procedure_type || "");
+    setText("wpProcName", curated?.procedure_name || "");
+    setText("wpOrigin", curated?.origin || "No origin story added yet.");
+
+    // 3) Related list: if you want, keep your static links for now,
+    // but we can generate real related results later.
+  }
+
+  renderWaypoint();
 </script>
+
 
 
 

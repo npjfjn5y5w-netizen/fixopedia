@@ -138,9 +138,15 @@ if (isStatesPage || isAirportsPage) {
       return JSON.parse(localStorage.getItem(RECENTS_KEY) || "[]");
     }
 
-    function navigateToWaypoint(name) {
-      window.location.href = `waypoint.html?name=${encodeURIComponent(name)}`;
-    }
+    function navigateToWaypoint(wp) {
+  // Prefer unique id, fall back to name
+  if (wp?.fixipedia_id) {
+    window.location.href = `waypoint.html?id=${encodeURIComponent(wp.fixipedia_id)}`;
+  } else if (wp?.name) {
+    window.location.href = `waypoint.html?name=${encodeURIComponent(wp.name)}`;
+  }
+}
+
 
     function renderCards(list) {
   waypointList.innerHTML = "";
@@ -161,7 +167,7 @@ if (isStatesPage || isAirportsPage) {
 
     li.addEventListener("click", () => {
       saveRecent(wp.name);
-      navigateToWaypoint(wp.name);
+      navigateToWaypoint(wp);
     });
 
     waypointList.appendChild(li);
