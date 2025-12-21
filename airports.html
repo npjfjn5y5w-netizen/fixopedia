@@ -1,8 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-  <input id="searchInput" />
-<div id="resultsHint"></div>
-<div id="airportList"></div>
 
 <head>
   <meta charset="UTF-8" />
@@ -10,6 +7,7 @@
   <title>Browse by Airport | Fixipedia</title>
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 <header>
   <div class="container">
@@ -21,58 +19,21 @@
 <main class="container">
   <section>
     <h2>Browse by Airport</h2>
-    <ul id="airportList"></ul>
+
+    <input id="searchInput" type="text" placeholder="Search airports (name, ID, ICAO/IATA, state)..." />
+    <div id="resultsHint" class="hint"></div>
+
+    <!-- IMPORTANT: this must be a single unique element -->
+    <div id="airportList"></div>
   </section>
 </main>
+
+
 
 <footer>
   <div class="container"><p>&copy; 2025 Fixipedia</p></div>
 </footer>
 
-<script>
-  (async () => {
-    const list = document.getElementById("airportList");
-
-    const get = (o, ...keys) =>
-      keys.map(k => o?.[k]).find(v => v != null && String(v).trim() !== "") || "";
-
-    const splitVals = (v) =>
-      String(v)
-        .split(",")
-        .map(s => s.trim())
-        .filter(Boolean);
-
-    try {
-      const res = await fetch("./waypoints.json");
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const waypoints = await res.json();
-
-      const airports = new Set();
-
-      waypoints.forEach(w => {
-        // Try multiple likely keys
-        const raw = get(w, "airport", "Airport", "Airports", "ICAOCode (from Airport)");
-        splitVals(raw).forEach(a => airports.add(a));
-      });
-
-      const sorted = [...airports].sort((a, b) => a.localeCompare(b));
-
-      if (sorted.length === 0) {
-        list.innerHTML = "<li>No airports found in waypoints.json. (Likely the airport fields are blank.)</li>";
-        return;
-      }
-
-      sorted.forEach(airport => {
-        const li = document.createElement("li");
-        li.innerHTML = `<a href="index.html?airport=${encodeURIComponent(airport)}#search">${airport}</a>`;
-        list.appendChild(li);
-      });
-    } catch (err) {
-      console.error(err);
-      list.innerHTML = "<li>Could not load waypoints.json. Make sure Live Server is running.</li>";
-    }
-  })();
-</script>
 <script type="module" src="./airports.js"></script>
 
 </body>
